@@ -11,9 +11,10 @@ from collections import deque
 from sklearn.utils.linear_assignment_ import linear_assignment
 
 import helpers
+from helpers import *
 import detector
-import tracker
-
+from tracker import Tracker
+import time
 # Global variables to be used by funcitons of VideoFileClop
 frame_count = 0 # frame counter
 
@@ -26,7 +27,7 @@ tracker_list =[] # list for trackers
 # list for track ID
 track_id_list= deque(['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K'])
 
-debug = True
+debug = False
 
 def assign_detections_to_trackers(trackers, detections, iou_thrd = 0.3):
     '''
@@ -205,7 +206,8 @@ if __name__ == "__main__":
         
         start=time.time()
         output = 'test_v7.mp4'
-        clip1 = VideoFileClip("project_video.mp4")#.subclip(4,49) # The first 8 seconds doesn't have any cars...
+        in_video = cap = '/content/drive/MyDrive/frinks/Trimmed_IITH.mp4'
+        clip1 = VideoFileClip(in_video)#.subclip(4,49) # The first 8 seconds doesn't have any cars...
         clip = clip1.fl_image(pipeline)
         clip.write_videofile(output, audio=False)
         end  = time.time()
