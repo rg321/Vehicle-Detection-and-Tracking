@@ -188,7 +188,14 @@ def pipeline(img):
     
        
     return img
-    
+
+import argparse
+parser = argparse.ArgumentParser()
+parser.add_argument('--vid',  type=str)
+parser.add_argument('--start_time',  type=int)
+parser.add_argument('--end_time',  type=int)
+args = parser.parse_args()
+
 if __name__ == "__main__":    
     
     det = detector.CarDetector()
@@ -198,16 +205,18 @@ if __name__ == "__main__":
         
         for i in range(len(images))[0:7]:
              image = images[i]
-             image_box = pipeline(image)   
+             image_box = pipeline(image)
              plt.imshow(image_box)
              plt.show()
            
     else: # test on a video file.
         
         start=time.time()
-        output = 'test_v7.mp4'
-        in_video = cap = '/content/drive/MyDrive/frinks/Trimmed_IITH.mp4'
-        clip1 = VideoFileClip(in_video)#.subclip(4,49) # The first 8 seconds doesn't have any cars...
+        output = 'output_' + args.vid.split('/')[-1]
+        if not args.end_time:
+            clip1 = VideoFileClip(args.vid)#.subclip(4,49) # The first 8 seconds doesn't have any cars...
+        else:
+            clip1 = VideoFileClip(in_video).subclip(args.start_time,args.end_time) # The first 8 seconds doesn't have any cars...
         clip = clip1.fl_image(pipeline)
         clip.write_videofile(output, audio=False)
         end  = time.time()
