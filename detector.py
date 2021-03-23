@@ -97,12 +97,11 @@ class CarDetector(object):
         
         start=time.time()
         with self.detection_graph.as_default():
-              image_expanded = np.(image, axis=0)
+              image_expanded = np.expand_dims(image, axis=0)
               (boxes, scores, classes, num_detections) = self.sess.run(
                   [self.boxes, self.scores, self.classes, self.num_detections],
                   feed_dict={self.image_tensor: image_expanded})
-        end=time.time()
-        time_for_detection=end-start
+
           
               if visual == True:
                   vis_util.visualize_boxes_and_labels_on_image_array(
@@ -125,7 +124,7 @@ class CarDetector(object):
               cls = classes.tolist()
               
               # The ID for car in COCO data set is 3 
-              idx_vec = [i for i, v in enumerate(cls) if ((v==3) and (scores[i]>0.3))]
+              idx_vec = [i for i, v in enumerate(cls) if ((v==3) and (scores[i]>0.5))]
               
               if len(idx_vec) ==0:
                   print('no detection!')
@@ -139,7 +138,7 @@ class CarDetector(object):
                       box_w = box[3] - box[1]
                       ratio = box_h/(box_w + 0.01)
                       
-                      if ((ratio < 0.8) and (box_h>20) and (box_w>20)):
+                      if ((ratio < 3) and (box_h>30) and (box_w>30)):
                           tmp_car_boxes.append(box)
                           print(box, ', confidence: ', scores[idx], 'ratio:', ratio)
                          
@@ -150,7 +149,7 @@ class CarDetector(object):
                   
                   self.car_boxes = tmp_car_boxes
              
-        return self.car_boxes, time_for_detection
+        return self.car_boxes
         
 if __name__ == '__main__':
         # Test the performance of the detector

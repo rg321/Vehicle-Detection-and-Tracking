@@ -111,12 +111,12 @@ def draw_box_label(img, bbox_cv2, box_color=(0, 255, 255), show_label=True):
     '''
     #box_color= (0, 255, 255)
     font = cv2.FONT_HERSHEY_SIMPLEX
-    font_size = 0.7
+    font_size = 0.2
     font_color = (0, 0, 0)
     left, top, right, bottom = bbox_cv2[1], bbox_cv2[0], bbox_cv2[3], bbox_cv2[2]
     
     # Draw the bounding box
-    cv2.rectangle(img, (left, top), (right, bottom), box_color, 4)
+    cv2.rectangle(img, (left, top), (right, bottom), box_color, 1)
     
     if show_label:
         # Draw a filled box on top of the bounding box (as the background for the labels)
