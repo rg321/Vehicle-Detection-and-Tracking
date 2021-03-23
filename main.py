@@ -226,7 +226,9 @@ if __name__ == "__main__":
         if not args.end_time:
             clip1 = VideoFileClip(args.vid)#.subclip(4,49) # The first 8 seconds doesn't have any cars...
         else:
-            clip1 = VideoFileClip(args.vid).subclip(args.start_time,args.end_time).resize(height=args.size) # The first 8 seconds doesn't have any cars...
+            clip1 = VideoFileClip(args.vid).subclip(args.start_time,args.end_time)\
+            .resize(height=args.size)\
+            .crop(x1=30,y1=10,x2=100,y2=120) # The first 8 seconds doesn't have any cars...
         clip = clip1.fl_image(pipeline)
         clip.write_videofile(output, audio=False)
         end  = time.time()
