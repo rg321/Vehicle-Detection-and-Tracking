@@ -29,6 +29,10 @@ track_id_list= deque(['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K'])
 
 debug = False
 
+total_time_to_detect = 0
+
+det_time_alone = 0
+
 def assign_detections_to_trackers(trackers, detections, iou_thrd = 0.3):
     '''
     From current list of trackers and new detections, output matched detections,
@@ -89,11 +93,19 @@ def pipeline(img):
     global min_hits
     global track_id_list
     global debug
+    global total_time_to_detect
+    global det_time_alone
     
     frame_count+=1
+
     
     img_dim = (img.shape[1], img.shape[0])
-    z_box = det.get_localization(img) # measurement
+    start=time.time()
+    z_box, det_time = det.get_localization(img) # measurement
+    end=time.time()
+    total_time_to_detect+=(end-start)
+    det_time_alone+=det_time
+
     if debug:
        print('Frame:', frame_count)
        
@@ -216,9 +228,11 @@ if __name__ == "__main__":
         if not args.end_time:
             clip1 = VideoFileClip(args.vid)#.subclip(4,49) # The first 8 seconds doesn't have any cars...
         else:
-            clip1 = VideoFileClip(in_video).subclip(args.start_time,args.end_time) # The first 8 seconds doesn't have any cars...
+            clip1 = VideoFileClip(args.vid).subclip(args.start_time,args.end_time) # The first 8 seconds doesn't have any cars...
         clip = clip1.fl_image(pipeline)
         clip.write_videofile(output, audio=False)
         end  = time.time()
         
         print(round(end-start, 2), 'Seconds to finish')
+        print(round(total_time_to_detect, 2), 'Seconds for detection.py')
+        print(round(det_time_alone, 2), 'Seconds for detection alone')

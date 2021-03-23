@@ -12,6 +12,7 @@ from matplotlib import pyplot as plt
 import time
 from glob import glob
 cwd = os.path.dirname(os.path.realpath(__file__))
+import time
 
 # Uncomment the following two lines if need to use the Tensorflow visualization_unitls
 #os.chdir(cwd+'/models')
@@ -73,7 +74,7 @@ class CarDetector(object):
         """Determines the locations of the cars in the image
 
         Args:
-            image: camera image
+            image: camera imageexpand_dims
 
         Returns:
             list of bounding boxes: coordinates [y_up, x_left, y_down, x_right]
@@ -93,11 +94,15 @@ class CarDetector(object):
                         13: {'id': 13, 'name': u'stop sign'},
                         14: {'id': 14, 'name': u'parking meter'}}  
         
+        
+        start=time.time()
         with self.detection_graph.as_default():
-              image_expanded = np.expand_dims(image, axis=0)
+              image_expanded = np.(image, axis=0)
               (boxes, scores, classes, num_detections) = self.sess.run(
                   [self.boxes, self.scores, self.classes, self.num_detections],
                   feed_dict={self.image_tensor: image_expanded})
+        end=time.time()
+        time_for_detection=end-start
           
               if visual == True:
                   vis_util.visualize_boxes_and_labels_on_image_array(
@@ -145,7 +150,7 @@ class CarDetector(object):
                   
                   self.car_boxes = tmp_car_boxes
              
-        return self.car_boxes
+        return self.car_boxes, time_for_detection
         
 if __name__ == '__main__':
         # Test the performance of the detector
